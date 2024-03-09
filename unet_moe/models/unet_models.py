@@ -1,8 +1,7 @@
 from torch.nn import Module, ModuleList
 from torch.nn import Conv2d, ReLU, BatchNorm2d, MaxPool2d, UpsamplingNearest2d, AdaptiveAvgPool2d
-from torch.nn import Linear, BatchNorm1d
+from torch.nn import Linear
 import torch
-
 
 class _CountedModule(Module):
     def parameters_count(self):
