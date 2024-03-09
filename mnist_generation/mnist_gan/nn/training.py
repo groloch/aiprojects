@@ -20,3 +20,13 @@ def generator_optimizer(learning_rate: float) -> Optimizer:
 
 def discriminator_optimizer(learning_rate: float) -> Optimizer:
     return Adam(learning_rate=learning_rate)
+
+def discriminator_accuracy(real_output: tf.Tensor,
+                           fake_output: tf.Tensor):
+    real_prediction = tf.where(real_output > 0.5, 1, 0)
+    fake_prediction = tf.where(fake_output < 0.5, 1, 0)
+
+    real_acc = tf.reduce_mean(tf.reduce_sum(real_prediction, axis=-1), axis=0)
+    fake_acc = tf.reduce_mean(tf.reduce_sum(fake_prediction, axis=-1), axis=0)
+
+    return (real_acc+fake_acc)/2

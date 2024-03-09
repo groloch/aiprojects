@@ -13,6 +13,7 @@ def load_data():
     classes[np.arange(len(labels)), labels] = 1
 
     images = np.expand_dims(images, axis=-1)
+    images = images / 255.0
 
     print(images.shape, classes.shape)
 
