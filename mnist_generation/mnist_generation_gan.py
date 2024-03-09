@@ -7,10 +7,10 @@ from keras.models import Model
 from keras.losses import Loss, BinaryCrossentropy
 from keras.optimizers import Optimizer, Adam
 
-from mnist_gan.nn import create_generator, create_discriminator
-from mnist_gan.nn import generator_loss, discriminator_loss
-from mnist_gan.nn import generator_optimizer, discriminator_optimizer
-from mnist_gan.data import prepare_data
+from .mnist_gan.nn import create_generator, create_discriminator
+from .mnist_gan.nn import generator_loss, discriminator_loss
+from .mnist_gan.nn import generator_optimizer, discriminator_optimizer
+from .mnist_gan.data import prepare_data
 
 
 def create_models() -> dict[str, Model]:
