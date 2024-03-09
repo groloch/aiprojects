@@ -15,8 +15,10 @@ from .mnist_gan.data import prepare_data
 
 def create_models() -> dict[str, Model]:
     generator = create_generator()
+    generator.summary()
 
     discriminator = create_discriminator()
+    discriminator.summary()
 
     return {
         'generator': generator,
@@ -97,8 +99,8 @@ def train(generator: Model, discriminator: Model,
                                 'gen': gen_loss_fn,
                                 'disc': disc_loss_fn
                             }, batch)
-                pbar.set_description(f'Epoch {epoch}, step {step}: Generator loss {running_loss["gen"] / (step+1)}, '
-                                     f'Discriminator loss {running_loss["disc"] / (step+1)}')
+                pbar.set_description(f'Epoch {epoch}, step {step}: Generator loss {running_loss["gen"] / (step+1):.4f}, '
+                                     f'Discriminator loss {running_loss["disc"] / (step+1):.4f}')
                 
     generator.save('mnist_gan_generator.h5')
     discriminator.save('mnist_gan_discriminator.h5')
