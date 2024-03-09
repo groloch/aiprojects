@@ -103,7 +103,8 @@ def train(generator: Model, discriminator: Model,
     generator.save('mnist_gan_generator.h5')
     discriminator.save('mnist_gan_discriminator.h5')
 
-if __name__ == '__main__':
+
+def main(epochs, batch_size):
     models = create_models()
 
     generator_model = models['generator']
@@ -111,5 +112,9 @@ if __name__ == '__main__':
 
     train(generator=generator_model,
           discriminator=discriminator_model,
-          epochs=50,
-          batch_size=64)
+          epochs=epochs,
+          batch_size=batch_size)
+
+if __name__ == '__main__':
+    main(50, 64)
+ 
