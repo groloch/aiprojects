@@ -104,7 +104,7 @@ def train(generator: Model, discriminator: Model,
     discriminator.save('mnist_gan_discriminator.h5')
 
 
-def main(epochs, batch_size):
+def main(epochs: int, batch_size: int):
     models = create_models()
 
     generator_model = models['generator']
