@@ -40,6 +40,6 @@ def create_discriminator() -> Model:
 
     x = GlobalAveragePooling2D()(x)
 
-    x = dense_block(1, do_relu=False)(x)
+    x = dense_block(1, do_relu=False, do_bn=False)(x)
 
     return Model(inputs=input_image, outputs=x, name='mnist_discriminator')
