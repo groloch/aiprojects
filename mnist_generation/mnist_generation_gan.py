@@ -98,7 +98,7 @@ def train(generator: Model, discriminator: Model,
             'gen': 0,
             'disc': 0
         }
-        for step in (pbar:=tqdm(range(steps_per_epoch), desc=f'Epoch {epoch}')):
+        for step in (pbar:=tqdm(range(steps_per_epoch), desc=f'Epoch {epoch}', ascii=' =')):
             batch = next(batch_generator)
             train_step(generator=generator,
                        discriminator=discriminator,
