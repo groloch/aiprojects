@@ -3,7 +3,7 @@ from keras.losses import BinaryCrossentropy
 from keras.optimizers import Optimizer, Adam
 
 
-cross_entropy = BinaryCrossentropy()
+cross_entropy = BinaryCrossentropy(from_logits=True)
 
 
 def generator_loss(fake_output: tf.Tensor) -> tf.Tensor:

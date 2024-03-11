@@ -4,8 +4,8 @@ from tqdm import tqdm
 import tensorflow as tf
 import numpy as np
 from keras.models import Model
-from keras.losses import Loss, BinaryCrossentropy
-from keras.optimizers import Optimizer, Adam
+from keras.optimizers import Optimizer
+from matplotlib import pyplot as plt
 
 from .mnist_gan.nn import create_generator, create_discriminator
 from .mnist_gan.nn import generator_loss, discriminator_loss
@@ -34,15 +34,15 @@ def train_step(generator: Model,
                gen_optimizer: Optimizer,
                disc_optimizer: Optimizer):
     images = batch['real_images']
-    classes = batch['real_classes']
+    labels = batch['real_labels']
     latents = batch['latents']
-    gen_classes = batch['gen_classes']
+    gen_labels = batch['gen_labels']
 
     with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
-        generated_images = generator([latents, gen_classes], training=True)
+        generated_images = generator(latents, training=True)
 
-        real_probs = discriminator([images, classes], training=True)
-        fake_probs = discriminator([generated_images, gen_classes], training=True)
+        real_probs = discriminator(images, training=True)
+        fake_probs = discriminator(generated_images, training=True)
 
         gen_loss = gen_loss_fn(fake_probs)
         disc_loss = disc_loss_fn(real_probs, fake_probs)
@@ -57,14 +57,26 @@ def metrics_run(generator: Model, discriminator: Model,
                 running_values: dict[str, float], metrics: dict[str, Callable],
                 batch: dict[str, np.ndarray]) -> None:
     images = batch['real_images']
-    classes = batch['real_classes']
+    classes = batch['real_labels']
     latents = batch['latents']
-    gen_classes = batch['gen_classes']
-    generated_images = generator([latents, gen_classes], training=False)
-    fake_probs = discriminator([generated_images, gen_classes], training=False)
-    real_probs = discriminator([images, classes], training=False)
+    gen_classes = batch['gen_labels']
+    generated_images = generator(latents, training=False)
+    fake_probs = discriminator(generated_images, training=False)
+    real_probs = discriminator(images, training=False)
     running_values['gen'] += metrics['gen'](fake_probs)
     running_values['disc'] += metrics['disc'](real_probs, fake_probs)
+
+def save_images(generator: Model, seed: np.ndarray, labels: np.ndarray, 
+                epoch: int, fig_size: tuple[int, int]=(4, 4)):
+    fig, axs = plt.subplots(*fig_size)
+    images = generator(seed, training=False)
+    for i in range(fig_size[0]):
+        for j in range(fig_size[1]):
+            ax = axs[i][j]
+            ax.imshow(images[i+j*fig_size[0]], cmap='gray')
+            ax.axis('off')
+    plt.savefig(f'images_at_epoch_{epoch:04d}')
+    plt.close(fig)
 
 def train(generator: Model, discriminator: Model, 
           epochs: int, batch_size: int) -> None:
@@ -77,6 +89,9 @@ def train(generator: Model, discriminator: Model,
 
     gen_optimizer = generator_optimizer(learning_rate=1e-4)
     disc_optimizer = discriminator_optimizer(learning_rate=1e-4)
+
+    images_seed = np.random.normal(0, 1, (16, 10))
+    labels_seed = np.random.randint(0, 10, (16, 1))
 
     for epoch in range(epochs):
         running_loss = {
@@ -101,6 +116,8 @@ def train(generator: Model, discriminator: Model,
                             }, batch)
                 pbar.set_description(f'Epoch {epoch}, step {step}: Generator loss {running_loss["gen"] / (step+1):.4f}, '
                                      f'Discriminator loss {running_loss["disc"] / (step+1):.4f}')
+        
+        save_images(generator, images_seed, labels_seed, epoch)
                 
     generator.save('mnist_gan_generator.h5')
     discriminator.save('mnist_gan_discriminator.h5')
