@@ -21,7 +21,7 @@ def create_generator() -> Model:
     x = depthwise_separable_convoltion_block(256, (3, 3))(x)
     x = convolution_block(256, (3, 3))(x)
     x = convolution_block(1, (1, 1), do_relu=False)(x)
-    x = Activation('sigmoid')(x)
+    x = Activation('tanh')(x)
 
     return Model(inputs=input_latent, outputs=x, name='mnist_generator')
 

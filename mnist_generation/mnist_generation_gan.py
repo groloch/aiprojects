@@ -114,7 +114,7 @@ def train(generator: Model, discriminator: Model,
                                 'gen': gen_loss_fn,
                                 'disc': disc_loss_fn
                             }, batch)
-                pbar.set_description(f'Epoch {epoch}, step {step}: Generator loss {running_loss["gen"] / (step+1):.4f}, '
+                pbar.set_description(f'Epoch {epoch}: Generator loss {running_loss["gen"] / (step+1):.4f}, '
                                      f'Discriminator loss {running_loss["disc"] / (step+1):.4f}')
         
         save_images(generator, images_seed, labels_seed, epoch)

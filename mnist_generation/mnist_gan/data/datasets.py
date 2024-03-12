@@ -10,7 +10,7 @@ def load_data():
     labels = np.concatenate((y_train, y_test), axis=0)
 
     images = np.expand_dims(images, axis=-1)
-    images = images / 255.0
+    images = (images - 127.5) / 127.5
 
 
     return images, labels
