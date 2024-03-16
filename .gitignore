@@ -3,3 +3,4 @@
 *.npz
 *test*
 *.zip
+ai_accelerator/*

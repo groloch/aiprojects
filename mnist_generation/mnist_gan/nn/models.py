@@ -7,19 +7,19 @@ from keras.models import Model
 def create_generator() -> Model:
     input_latent = x1 = Input((10,), name='input_latent') # Random variable
 
-    x = dense_block(units=7*7*64, do_bn=False,
-                    target_shape=(7, 7, 64), name='latent_embedding')(x1)
+    x = dense_block(units=7*7*32, do_bn=False,
+                    target_shape=(7, 7, 32), name='latent_embedding')(x1)
+    x = convolution_block(32, (3, 3))(x)
+    x = depthwise_separable_convoltion_block(32, (3, 3))(x)
+
+    x = UpSampling2D()(x)
     x = convolution_block(64, (3, 3))(x)
     x = depthwise_separable_convoltion_block(64, (3, 3))(x)
 
     x = UpSampling2D()(x)
     x = convolution_block(128, (3, 3))(x)
     x = depthwise_separable_convoltion_block(128, (3, 3))(x)
-
-    x = UpSampling2D()(x)
-    x = convolution_block(256, (3, 3))(x)
-    x = depthwise_separable_convoltion_block(256, (3, 3))(x)
-    x = convolution_block(256, (3, 3))(x)
+    x = convolution_block(128, (3, 3))(x)
     x = convolution_block(1, (1, 1), do_relu=False)(x)
     x = Activation('tanh')(x)
 
